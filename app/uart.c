@@ -508,6 +508,7 @@ void UART_HandleCommand(void)
 
 	case 0x0521:
 		// Not implementing non-authentic command
+		UART_Send("Ok\r\n", 4);
 		break;
 
 	case 0x0527:
