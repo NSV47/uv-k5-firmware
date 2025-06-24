@@ -72,16 +72,18 @@ class uvk5:
 
         self.CMD_READ_CFG_MEM = b'\x1B\x05' #0x051B -> 0x051C
         self.CMD_WRITE_CFG_MEM= b'\x1D\x05' #0x051D -> 0x051E
-
+#-------------------------------------------------------------------------------------------
         self.CMD_0521         = b'\x21\x05'
-
+#-------------------------------------------------------------------------------------------
         self.CMD_052D         = b'\x2D\x05'
         self.CMD_051F         = b'\x1F\x05'
         self.CMD_052F         = b'\x2F\x05'
         
         self.CMD_REBOOT       = b'\xDD\x05' #0x05DD -> no reply
         self.CMD_0530         = b'\x30\x05' #0x0530 -> no reply //Only in bootloader
-        
+#-------------------------------------------------------------------------------------------
+        self.CMD_0531         = b'\x31\x05' #0x0530 -> no reply //Only in bootloader
+#-------------------------------------------------------------------------------------------        
         self.debug = False if os.getenv('DEBUG') is None else True
 
     def __del__(self):
@@ -174,7 +176,17 @@ class uvk5:
         self.uart_send_msg(cmd)
         reply = self.uart_receive_msg(128)
         return reply[12:-4]
-    
+#----------------------------------------------------------------------------------
+    def unk_fn_0531(self,text):
+        buff = bytes(text,'ascii') + b'\x00'*(16-len(text))
+        cmd = self.CMD_0531 + struct.pack('<H',16) + buff
+        cmd_crc = struct.pack('<H',crc16_ccitt(cmd))
+        cmd= b'\xAB\xCD' + struct.pack('<H',20) + cmd + cmd_crc + b'\xDC\xBA'
+        self.uart_send_msg(cmd)
+        reply = self.uart_receive_msg(128)
+        return reply[12:-4]
+        # return reply[:].split(b'\r', 1)[0].decode()
+#----------------------------------------------------------------------------------    
     def unk_fn_0521(self):
         cmd=self.build_uart_command(self.CMD_0521, self.sessTimestamp)
         self.uart_send_msg(cmd)
@@ -182,7 +194,7 @@ class uvk5:
         # return reply[8:].split(b'\0', 1)[0].decode()
         # return reply[12:-4]
         return reply[:].split(b'\r', 1)[0].decode()
-
+#----------------------------------------------------------------------------------    
     def unk_fn_051F(self):
         #          0/1      +        2/3           
         cmd = self.CMD_051F + struct.pack('<H',18)+ \

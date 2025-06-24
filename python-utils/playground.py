@@ -10,5 +10,5 @@ with libuvk5.uvk5(arg_port) as radio:
     radio.debug=True
     if radio.connect():
         #radio.get_fw_version()
-        #radio.unk_fn_052F()
-        radio.unk_fn_051F()
+        radio.unk_fn_052F()
+        # radio.unk_fn_051F()
