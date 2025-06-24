@@ -527,6 +527,14 @@ void UART_HandleCommand(void)
 		CMD_052F(UART_Command.Buffer);
 		break;
 
+	case 0x0531:
+		//CMD_052F(UART_Command.Buffer);
+		// UART_Send("Ok\r\n", 4);
+		UART_Send(UART_Command.Data, sizeof(UART_Command.Data));
+		// UART_Send(UART_Command.Buffer, 10);
+		// UART_Send("\r\n", 2);
+		break;
+
 	case 0x05DD:
 #if defined(ENABLE_OVERLAY)
 		overlay_FLASH_RebootToBootloader();
